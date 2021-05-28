@@ -7,6 +7,9 @@
  *
  */
 
+import org.apache.shardingsphere.driver.api.yaml.YamlShardingSphereDataSourceFactory;
+import org.apache.shardingsphere.driver.jdbc.core.connection.ShardingSphereConnection;
+
 import java.io.*;
 import java.sql.*;
 import java.util.*;
@@ -25,18 +28,21 @@ public class ExecJDBC {
     try {
 
     Properties ini = new Properties();
+//    System.setProperty("prop", "D:\\zhoubin\\code\\benchmarksql-5.0\\run\\props.sharding");
+//    System.setProperty("commandFile", "D:\\zhoubin\\code\\benchmarksql-5.0\\run\\sql.common\\tableCreates.sql");
     ini.load( new FileInputStream(System.getProperty("prop")));
 
     // Register jdbcDriver
-    Class.forName(ini.getProperty( "driver" ));
+    String driverName = ini.getProperty("driver");
+    Class.forName(driverName);
 
     // make connection
-    conn = DriverManager.getConnection(ini.getProperty("conn"),
-      ini.getProperty("user"),ini.getProperty("password"));
+    Properties dbConnection = new Properties();
+    dbConnection.setProperty("user", ini.getProperty("user"));
+    dbConnection.setProperty("password", ini.getProperty("password"));
+    dbConnection.setProperty("config", (String)ini.getOrDefault("config", ""));
+    conn = ShardingJdbc.getConnection(ini.getProperty("conn"), dbConnection);
     conn.setAutoCommit(true);
-
-    // Create Statement
-    stmt = conn.createStatement();
 
       // Open inputFile
       BufferedReader in = new BufferedReader
@@ -61,8 +67,11 @@ public class ExecJDBC {
 		   sql.append(line.replaceAll("\\\\;", ";"));
 		   if (line.endsWith(";")) {
 		      String query = sql.toString();
-
+               // Create Statement
+               stmt = conn.createStatement();
 		      execJDBC(stmt, query.substring(0, query.length() - 1));
+		      stmt.close();
+		      stmt = null;
 		      sql = new StringBuffer();
 		   } else {
 		     sql.append("\n");
@@ -88,14 +97,15 @@ public class ExecJDBC {
     //exit Cleanly
     } finally {
       try {
-        if (conn !=null)
-           conn.close();
-      } catch(SQLException se) {
-        se.printStackTrace();
-      } // end finally
+          if (conn !=null)
+              conn.close();
+              conn = null;
+          } catch(SQLException se) {
+            se.printStackTrace();
+          } // end finally
 
     } // end try
-
+      System.exit(0);
   } // end main
 
 

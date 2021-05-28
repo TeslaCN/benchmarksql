@@ -261,7 +261,7 @@ public class jTPCCConnection
     public jTPCCConnection(String connURL, Properties connProps, int dbType)
 	throws SQLException
     {
-	this(DriverManager.getConnection(connURL, connProps), dbType);
+	this(ShardingJdbc.getConnection(connURL, connProps), dbType);
     }
 
     public void commit()

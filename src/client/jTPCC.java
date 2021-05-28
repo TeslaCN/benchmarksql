@@ -51,6 +51,7 @@ public class jTPCC implements jTPCCConfig
     {
 	PropertyConfigurator.configure("log4j.properties");
 	new jTPCC();
+	System.exit(0);
     }
 
     private String getProp (Properties p, String pName)
@@ -277,6 +278,11 @@ public class jTPCC implements jTPCCConfig
 		Properties dbProps = new Properties();
 		dbProps.setProperty("user", iUser);
 		dbProps.setProperty("password", iPassword);
+		try {
+			dbProps.setProperty("config", getProp(ini, "config"));
+		} catch (Exception exp) {
+
+		}
 
 		/*
 		 * Fine tuning of database conneciton parameters if needed.
@@ -472,7 +478,7 @@ public class jTPCC implements jTPCCConfig
 			String terminalName = "Term-" + (i>=9 ? ""+(i+1) : "0"+(i+1));
 			Connection conn = null;
 			printMessage("Creating database connection for " + terminalName + "...");
-			conn = DriverManager.getConnection(database, dbProps);
+			conn = ShardingJdbc.getConnection(database, dbProps);
 			conn.setAutoCommit(false);
 
 			jTPCCTerminal terminal = new jTPCCTerminal
