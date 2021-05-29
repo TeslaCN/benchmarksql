@@ -17,32 +17,44 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ShardingJdbc {
     private static org.apache.log4j.Logger log = Logger.getLogger(ShardingJdbc.class);
     public static final String DEFAULT_CONFIG = "config-sharding.yaml";
-    public static DataSource getDataSource() {
-        return getDataSource(DEFAULT_CONFIG);
-    }
+    public static  ConcurrentHashMap<String, DataSource> mapDataSource = new ConcurrentHashMap<>(1);
+    public static Object createDataSourceLock = new int[0];
 
     public static DataSource getDataSource(String configFile) {
-        if (configFile == null || "".equals(configFile)) {
-            configFile = DEFAULT_CONFIG;
+        if (mapDataSource.contains(configFile)) {
+            return mapDataSource.get(configFile);
         }
-        File file = new File(configFile);
-        if (!file.isAbsolute()) {
-            String fileAbsPath = ShardingJdbc.class.getClassLoader().getResource(configFile).getFile();
-            file = new File(fileAbsPath);
+        synchronized (createDataSourceLock) {
+            if (mapDataSource.contains(configFile)) {
+                return mapDataSource.get(configFile);
+            }
+            if (configFile == null || "".equals(configFile)) {
+                configFile = DEFAULT_CONFIG;
+            }
+            File file = new File(configFile);
+            if (!file.isAbsolute()) {
+                String fileAbsPath = ShardingJdbc.class.getClassLoader().getResource(configFile).getFile();
+                file = new File(fileAbsPath);
+            }
+            try {
+                DataSource dataSource =  YamlShardingSphereDataSourceFactory.createDataSource(file);
+                mapDataSource.put(configFile, dataSource);
+                mapDataSource.put(file.getAbsolutePath(), dataSource);
+                return dataSource;
+            } catch (Exception exp) {
+                exp.printStackTrace();
+                return null;
+            }
         }
-        try {
-            return YamlShardingSphereDataSourceFactory.createDataSource(file);
-        } catch (Exception exp) {
-            exp.printStackTrace();
-            return null;
-        }
+
     }
 
-    public static Connection getConnection(String dbConn, Properties dbProperties) throws SQLException {
+    public static synchronized Connection getConnection(String dbConn, Properties dbProperties) throws SQLException {
         if (dbConn.toLowerCase(Locale.ENGLISH).contains("opengauss")) {
             log.error("create in sharding: this connection use normal connector!!!" + dbConn);
             DataSource dataSource = getDataSource((String) dbProperties.getOrDefault("config", ""));
