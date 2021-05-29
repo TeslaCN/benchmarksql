@@ -26,7 +26,7 @@ public class ShardingJdbc {
     public static Object createDataSourceLock = new int[0];
 
     public static DataSource getDataSource(String configFile) {
-        if (mapDataSource.contains(configFile)) {
+        if (mapDataSource.containsKey(configFile)) {
             return mapDataSource.get(configFile);
         }
         synchronized (createDataSourceLock) {
