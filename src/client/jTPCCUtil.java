@@ -72,7 +72,7 @@ public class jTPCCUtil implements jTPCCConfig
 
 	if (dbConn == null)
 	{
-	    dbConn = DriverManager.getConnection(db, dbProps);
+	    dbConn = ShardingJdbc.getConnection(db, dbProps);
 	    stmtGetConfig = dbConn.prepareStatement(
 		"SELECT cfg_value FROM bmsql_config " +
 		" WHERE cfg_name = ?");

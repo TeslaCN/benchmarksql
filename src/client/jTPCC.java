@@ -51,7 +51,7 @@ public class jTPCC implements jTPCCConfig
     {
 	PropertyConfigurator.configure("log4j.properties");
 	new jTPCC();
-	System.exit(0);
+//	System.exit(0);
     }
 
     private String getProp (Properties p, String pName)
