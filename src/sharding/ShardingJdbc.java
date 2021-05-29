@@ -30,7 +30,7 @@ public class ShardingJdbc {
             return mapDataSource.get(configFile);
         }
         synchronized (createDataSourceLock) {
-            if (mapDataSource.contains(configFile)) {
+            if (mapDataSource.containsKey(configFile)) {
                 return mapDataSource.get(configFile);
             }
             if (configFile == null || "".equals(configFile)) {
