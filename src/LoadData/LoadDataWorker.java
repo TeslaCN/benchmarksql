@@ -99,8 +99,8 @@ public class LoadDataWorker implements Runnable
 
 	stmtConfig = dbConn.prepareStatement(
 		"INSERT INTO bmsql_config (" +
-		"  cfg_name, cfg_value) " +
-		"VALUES (?, ?)"
+		"  cfg_name, cfg_value, cfg_id) " +
+		"VALUES (?, ?, 0)"
 	    );
 	stmtItem = dbConn.prepareStatement(
 		"INSERT INTO bmsql_item (" +

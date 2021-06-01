@@ -1,6 +1,9 @@
+create tablespace example2 location '/opt/opengauss/pg_location/example2';
+create tablespace example3 location '/opt/opengauss/pg_location/example3';
 create table bmsql_config (
   cfg_name    varchar(30) primary key,
-  cfg_value   varchar(50)
+  cfg_value   varchar(50),
+  cfg_id int default 0
 );
 
 create table bmsql_warehouse (
@@ -51,7 +54,8 @@ create table bmsql_customer (
   c_since        timestamp,
   c_middle       char(2),
   c_data         varchar(500)
-);
+)
+tablespace example2;
 
 create sequence bmsql_hist_id_seq;
 
@@ -123,6 +127,7 @@ create table bmsql_stock (
   s_dist_08    char(24),
   s_dist_09    char(24),
   s_dist_10    char(24)
-);
+)
+tablespace example3;
 
 
