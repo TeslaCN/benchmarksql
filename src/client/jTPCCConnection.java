@@ -62,8 +62,8 @@ public class jTPCCConnection
 	// PreparedStataments for NEW_ORDER
 	stmtNewOrderSelectWhseCust = dbConn.prepareStatement(
 		"SELECT c_discount, c_last, c_credit, w_tax " +
-		"    FROM bmsql_customer " +
-		"    JOIN bmsql_warehouse ON (w_id = c_w_id) " +
+		"    FROM bmsql_customer c " +
+		"    JOIN bmsql_warehouse w ON (w.w_id = c.c_w_id) " +
 		"    WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
 	stmtNewOrderSelectDist = dbConn.prepareStatement(
 		"SELECT d_tax, d_next_o_id " +
