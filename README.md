@@ -8,9 +8,12 @@ CHANGE LOG:
 
 本次新增加适配sharding-jdbc的内容。主要修改点:
 
-* 底层创建connection替换为sharding-jdbc connection
+* 当conn中包含opengauss关键字时，底层创建connection替换为sharding-jdbc connection
 * 新增配置文件prop.sharding
 * 忽略prop.sharding中的conn/password/username的连接信息，当conn内包含有opengauss时，使用该config指向的分布式配置文件来创建DataSource
+* 修改bmsql_config表增加cfg_id字段以配合sharding分表算法
+* 修改jTPCCConnection的部分sql语句
+* 增加sharding-jdbc的依赖库
 
 Version 5.0 lussman & jannicash:
 --------------------------------------
