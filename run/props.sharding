@@ -6,10 +6,10 @@ conn=jdbc:opengauss://localhost:5432/postgres?prepareThreshold=1&batchMode=on&de
 user=test
 password=Huawei@123
 
-warehouses=1
-loadWorkers=1
+warehouses=10
+loadWorkers=20
 
-terminals=1
+terminals=30
 //To run specified transactions per terminal- runMins must equal zero
 runTxnsPerTerminal=0
 //To run for specified minutes- runTxnsPerTerminal must equal zero

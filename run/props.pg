@@ -1,10 +1,10 @@
 db=postgres
-driver=org.postgresql.Driver
-conn=jdbc:postgresql://localhost:5432/postgres
-user=benchmarksql
-password=PWbmsql
+driver=org.postgresql.OpenGaussDriver
+conn=jdbc:postgresql://192.168.0.131:3307/sharding_db?batchMode=OFF&replication=TRUE
+user=sharding
+password=sharding
 
-warehouses=1
+warehouses=2
 loadWorkers=4
 
 terminals=1
