@@ -56,11 +56,11 @@ public class ShardingJdbc {
 
     public static synchronized Connection getConnection(String dbConn, Properties dbProperties) throws SQLException {
         if (dbConn.toLowerCase(Locale.ENGLISH).contains("opengauss")) {
-            log.error("create in sharding: this connection use normal connector!!!" + dbConn);
+            log.info("create in SHARDING!!!" + dbConn);
             DataSource dataSource = getDataSource((String) dbProperties.getOrDefault("config", ""));
             return dataSource.getConnection();
         } else {
-            log.error("error in sharding: this connection use normal connector!!!" + dbConn);
+            log.info("create in NORMAL!!!" + dbConn);
             return DriverManager.getConnection(dbConn, dbProperties);
         }
     }
