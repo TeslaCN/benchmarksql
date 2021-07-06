@@ -49,7 +49,7 @@ public class jTPCC implements jTPCCConfig
 
     public static void main(String args[])
     {
-	PropertyConfigurator.configure("log4j.properties");
+	PropertyConfigurator.configure("run/log4j.properties");
 	new jTPCC();
     }
 
