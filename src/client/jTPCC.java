@@ -741,9 +741,9 @@ public class jTPCC implements jTPCCConfig
 	    long totalMem = Runtime.getRuntime().totalMemory() / (1024*1024);
 	    fmt.format("    Memory Usage: %dMB / %dMB          ", (totalMem - freeMem), totalMem);
 
-	    System.out.print(informativeText);
 	    for (int count = 0; count < 1+informativeText.length(); count++)
 		System.out.print("\b");
+		System.out.print(informativeText);
 	}
     }
 }
