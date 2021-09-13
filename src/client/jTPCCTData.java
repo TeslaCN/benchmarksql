@@ -1175,14 +1175,23 @@ log.trace("w_zip=" + payment.w_zip + " d_zip=" + payment.d_zip);
 	    orderStatus.c_balance = rs.getDouble("c_balance");
 	    rs.close();
 
-	    // Select the last ORDER for this customer.
+		stmt = db.stmtOorderSelectMaxOid;
+		stmt.setInt(1, orderStatus.w_id);
+		stmt.setInt(2, orderStatus.d_id);
+		stmt.setInt(3, orderStatus.c_id);
+		rs = stmt.executeQuery();
+		if (!rs.next()) {
+			throw new Exception(String.format("Unable to find max(o_id) from oorder. W_ID=%d, D_ID=%d, C_ID=%d", orderStatus.w_id, orderStatus.d_id, orderStatus.c_id));
+		}
+		int maxOid = rs.getInt(1);
+		rs.close();
+		
+		// Select the last ORDER for this customer.
 	    stmt = db.stmtOrderStatusSelectLastOrder;
 	    stmt.setInt(1, orderStatus.w_id);
 	    stmt.setInt(2, orderStatus.d_id);
 	    stmt.setInt(3, orderStatus.c_id);
-	    stmt.setInt(4, orderStatus.w_id);
-	    stmt.setInt(5, orderStatus.d_id);
-	    stmt.setInt(6, orderStatus.c_id);
+	    stmt.setInt(4, maxOid);
 	    rs = stmt.executeQuery();
 	    if (!rs.next())
 	    {
